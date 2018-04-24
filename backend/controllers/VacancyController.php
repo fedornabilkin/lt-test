@@ -2,9 +2,9 @@
 
 namespace backend\controllers;
 
+use common\models\Vacancy;
+use common\models\VacancySearch;
 use Yii;
-use backend\models\Vacancy;
-use backend\models\VacancySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

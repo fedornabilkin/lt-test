@@ -1,18 +1,20 @@
 <?php
 
-namespace backend\controllers;
+namespace frontend\controllers;
 
+use common\controllers\BaseWebController;
 use common\models\Customer;
 use common\models\CustomerSearch;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
 /**
  * CustomerController implements the CRUD actions for Customer model.
  */
-class CustomerController extends Controller
+class CustomerController extends BaseWebController
 {
     /**
      * @inheritdoc
@@ -20,6 +22,17 @@ class CustomerController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index', 'create', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'actions' => ['index', 'create', 'update', 'delete'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -36,7 +49,10 @@ class CustomerController extends Controller
     public function actionIndex()
     {
         $searchModel = new CustomerSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $params = Yii::$app->request->queryParams;
+        $params[$searchModel->formName()]['user_id'] = Yii::$app->user->identity->id;
+
+        $dataProvider = $searchModel->search($params);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -50,10 +66,14 @@ class CustomerController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($alias = null, $id = null)
     {
+        $model = $alias ? $this->findModelAlias($alias, Customer::class) : $this->findModel($id);
+        if($id && $model->seo->alias){
+            return $this->redirect(['view', 'alias' => $model->seo->alias]);
+        }
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 
@@ -65,8 +85,11 @@ class CustomerController extends Controller
     public function actionCreate()
     {
         $model = new Customer();
+        $model->detachBehavior('SeoBehavior');
+        $post = Yii::$app->request->post();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load($post)) {
+            $model->link('user', $this->_getUser());
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -85,6 +108,7 @@ class CustomerController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $this->checkUserByCustomer($model);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -100,7 +124,6 @@ class CustomerController extends Controller
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
     {
@@ -114,14 +137,9 @@ class CustomerController extends Controller
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
      * @return Customer the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Customer::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        return $this->_findCustomModel($id, Customer::class);
     }
 }

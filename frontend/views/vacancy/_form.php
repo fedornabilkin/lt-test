@@ -4,11 +4,13 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model common\models\Vacancy */
-/* @var $form yii\widgets\ActiveForm */
+/**
+ * @var $this yii\web\View
+ * @var $model common\models\Vacancy
+ * @var $form yii\widgets\ActiveForm
+ */
 
-$customers = ArrayHelper::map($model::getCustomers(),'id','title');
+$customers = ArrayHelper::map($model::getCustomersByUser(),'id','title');
 ?>
 
 <div class="vacancy-form">

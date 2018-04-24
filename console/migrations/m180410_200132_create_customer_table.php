@@ -15,6 +15,7 @@ class m180410_200132_create_customer_table extends AbstractMigration
         $this->createTable('{{%customer}}', [
             'id' => $this->primaryKey()->unsigned(),
             'uid' => $this->bigInteger()->unsigned(),
+            'user_id' => $this->integer(),
             'title' => $this->string()->notNull(),
             'phones' => $this->string()->notNull(),
             'address' => $this->text(),
@@ -31,6 +32,13 @@ class m180410_200132_create_customer_table extends AbstractMigration
             '{{%bind_uids}}',
             'id',
             'CASCADE');
+
+        $this->addForeignKey('fki-customer-user_id-user-id',
+            '{{%customer}}',
+            'user_id',
+            '{{%user}}',
+            'id',
+            'CASCADE');
     }
 
     /**
@@ -39,6 +47,7 @@ class m180410_200132_create_customer_table extends AbstractMigration
     public function safeDown()
     {
         $this->dropForeignKey('fki-customer-uid-bind_uids-id', '{{%customer}}');
+        $this->dropForeignKey('fki-customer-user_id-user-id', '{{%customer}}');
 
         $this->dropIndex('{{%idx-customer-uid}}','{{%customer}}');
 

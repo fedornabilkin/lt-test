@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\VacancySearch */
@@ -23,21 +24,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {update}',
+                'template' => '{update}',
             ],
-
-//            'customer',
-            'title',
+            [
+                'attribute' => 'title',
+                'format' => 'raw',
+                'value' => function($data){
+                    $url = Url::to(['/vacancy/view', 'alias' => $data->seo->alias]);
+                    return Html::a($data->title, $url);
+                }
+            ],
             'content:ntext',
-            //'age_min',
-            //'age_max',
-            //'phones',
-            //'address:ntext',
-            //'salary_min',
-            //'salary_max',
             [
                 'label' => Yii::t('app', 'Created At'),
                 'value' => function($data){

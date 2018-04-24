@@ -1,16 +1,15 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Customer;
 
 /**
- * CustomerSearch represents the model behind the search form of `backend\models\Customer`.
+ * VacancySearch represents the model behind the search form of `backend\models\Vacancy`.
  */
-class CustomerSearch extends Customer
+class VacancySearch extends Vacancy
 {
     /**
      * @inheritdoc
@@ -18,8 +17,8 @@ class CustomerSearch extends Customer
     public function rules()
     {
         return [
-            [['id', 'uid', 'status'], 'integer'],
-            [['title', 'phones', 'address', 'email'], 'safe'],
+            [['id', 'uid', 'customer_id', 'age_min', 'age_max', 'salary_min', 'salary_max'], 'integer'],
+            [['title', 'content', 'phones', 'address'], 'safe'],
         ];
     }
 
@@ -41,7 +40,7 @@ class CustomerSearch extends Customer
      */
     public function search($params)
     {
-        $query = Customer::find();
+        $query = Vacancy::find();
 
         // add conditions that should always apply here
 
@@ -61,13 +60,17 @@ class CustomerSearch extends Customer
         $query->andFilterWhere([
             'id' => $this->id,
             'uid' => $this->uid,
-            'status' => $this->status,
+            'customer_id' => $this->customer_id,
+            'age_min' => $this->age_min,
+            'age_max' => $this->age_max,
+            'salary_min' => $this->salary_min,
+            'salary_max' => $this->salary_max,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
+            ->andFilterWhere(['like', 'content', $this->content])
             ->andFilterWhere(['like', 'phones', $this->phones])
-            ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'email', $this->email]);
+            ->andFilterWhere(['like', 'address', $this->address]);
 
         return $dataProvider;
     }

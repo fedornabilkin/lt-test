@@ -1,10 +1,14 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
+use common\traits\BaseModelTrait;
 use fedornabilkin\binds\behaviors\BindBehavior;
 use fedornabilkin\binds\behaviors\SeoBehavior;
 use fedornabilkin\binds\models\base\BindModel;
+use fedornabilkin\binds\models\Bind;
+use fedornabilkin\binds\models\Catalog;
+use fedornabilkin\binds\models\Seo;
 use Yii;
 
 /**
@@ -28,6 +32,8 @@ use Yii;
  */
 class Vacancy extends BindModel
 {
+    use BaseModelTrait;
+
     /**
      * @inheritdoc
      */
@@ -35,6 +41,7 @@ class Vacancy extends BindModel
     {
         return 'vacancy';
     }
+
     public function behaviors()
     {
         return array_merge_recursive(parent::behaviors(), [
@@ -46,16 +53,22 @@ class Vacancy extends BindModel
                 'tree' => [
                     // никнэймы корневых узлов дерева каталога
                     'nicknames' => [
-//                        'vacancy_sex' => [
-//                            'multiple' => false,
-//                        ],
-//                        'vacancy_industry' => [
-//                            'multiple' => false,
-//                        ],
+                        'sex' => [
+                            'multiple' => false,
+                        ],
+                        'industry' => [
+                            'multiple' => false,
+                        ],
                     ],
                 ],
             ],
         ]);
+    }
+
+    public function beforeSave($insert)
+    {
+        $this->uid_content = $this->customer->uid;
+        return parent::beforeSave($insert);
     }
 
     /**
@@ -64,7 +77,7 @@ class Vacancy extends BindModel
     public function rules()
     {
         return [
-            [['uid', 'customer', 'age_min', 'age_max', 'salary_min', 'salary_max'], 'integer'],
+            [['uid', 'customer_id', 'age_min', 'age_max', 'salary_min', 'salary_max'], 'integer'],
             [['title', 'phones'], 'required'],
             [['content', 'address'], 'string'],
             [['title', 'phones'], 'string', 'max' => 255],
@@ -81,7 +94,7 @@ class Vacancy extends BindModel
         return [
             'id' => Yii::t('app', 'ID'),
             'uid' => Yii::t('app', 'Uid'),
-            'customer' => Yii::t('app', 'Customer'),
+            'customer_id' => Yii::t('app', 'Customer'),
             'title' => Yii::t('app', 'Title'),
             'content' => Yii::t('app', 'Content'),
             'age_min' => Yii::t('app', 'Age Min'),
@@ -98,6 +111,38 @@ class Vacancy extends BindModel
      */
     public function getCustomer()
     {
-        return $this->hasOne(Customer::class, ['id' => 'customer']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
+    }
+
+    /**
+     * Возвращает всех клиентов
+     * @return array|\yii\db\ActiveRecord[]
+     */
+    public static function getCustomers()
+    {
+        $rows = Customer::find()->all();
+        return $rows;
+    }
+
+    /**
+     * Возвращает всех клиентов, прикрепленных к пользователю
+     * @return array|\yii\db\ActiveRecord[]
+     */
+    public static function getCustomersByUser()
+    {
+        $rows = Customer::find()
+            ->where(['user_id' => self::getUserId()])
+            ->all();
+        return $rows;
+    }
+
+
+    public static function getModelByAlias($alias)
+    {
+        $model = self::find()->filterAvailable()
+            ->joinWith('seo')
+            ->where(['alias' => $alias])
+            ->one();
+        return $model;
     }
 }

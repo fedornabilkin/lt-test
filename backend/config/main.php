@@ -8,7 +8,7 @@ $params = array_merge(
 
 return [
     'id' => 'app-backend',
-    'name' => 'admin.lt-test',
+    'name' => 'admin.lt-test.ru',
     'language' => 'ru-RU',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
@@ -16,7 +16,6 @@ return [
     'modules' => [
         'user' => [
             'class' => 'dektrium\user\Module',
-            'admins' => ['fedornabilkin'],
 //            'controllerMap' => [
 //                'admin' => [
 //                    'class' => 'dektrium\user\controllers\AdminController',
@@ -103,7 +102,6 @@ return [
         'allowActions' => [
 //            'debug/*',
             'site/*',
-            '*',
         ]
     ],
 

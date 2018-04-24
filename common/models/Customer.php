@@ -1,7 +1,8 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
+use dektrium\user\models\User;
 use fedornabilkin\binds\behaviors\BindBehavior;
 use fedornabilkin\binds\behaviors\SeoBehavior;
 use fedornabilkin\binds\models\base\BindModel;
@@ -86,10 +87,39 @@ class Customer extends BindModel
     }
 
     /**
+     * модели hasOne, указать для удаления дочерней модели
+     * если она связана с родительской один-к-одному
+     */
+    public function getChildModels()
+    {
+        return array_merge(parent::getChildModels(), [
+            'Vacancy' => Vacancy::class,
+        ]);
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getVacancies()
     {
-        return $this->hasMany(Vacancy::class, ['customer' => 'id']);
+        return $this->hasMany(Vacancy::class, ['customer_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+
+
+    public static function getModelByAlias($alias)
+    {
+        $model = self::find()->filterAvailable()
+            ->joinWith('seo')
+            ->where(['alias' => $alias])
+            ->one();
+        return $model;
     }
 }

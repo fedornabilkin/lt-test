@@ -8,6 +8,7 @@ $params = array_merge(
 
 return [
     'id' => 'app-frontend',
+    'name' => 'lt-test.ru',
     'language' => 'ru-RU',
     'timeZone' => 'Europe/Moscow',
 
@@ -42,11 +43,17 @@ return [
                 ],
             ],
         ],
+
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => false,
-            'rules' => [],
+//            'enableStrictParsing' => false,
+            'rules' => [
+                'vakansii' => 'vacancy/index',
+                'vakansii/<alias:[[^a-zA-Z0-9\-]+>' => 'vacancy/view',
+                'kompanii' => 'customer/index',
+                'kompanii/<alias:[[^a-zA-Z0-9\-]+>' => 'customer/view',
+            ],
         ],
 
         'view' => [
@@ -60,7 +67,12 @@ return [
             // following line will restrict access to admin controller from frontend application
             'as frontend' => 'dektrium\user\filters\FrontendFilter',
             'class' => 'dektrium\user\Module',
-            'admins' => ['fedornabilkin'],
+        ],
+        'treemanager' => [
+            'class' => 'kartik\tree\Module',
+            'dataStructure' => [
+                'keyAttribute' => 'id',
+            ],
         ],
     ],
     'params' => $params,
