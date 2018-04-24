@@ -39,7 +39,7 @@ class BaseWebController extends Controller
 
     protected function findModelAlias($alias, $class)
     {
-        if (($model = $class::getModelByAlias($alias, $class)) !== null) {
+        if (($model = (new $class)->getModelByAlias($alias)) !== null) {
             return $model;
         }
 

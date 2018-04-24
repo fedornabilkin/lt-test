@@ -112,14 +112,4 @@ class Customer extends BindModel
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
-
-
-    public static function getModelByAlias($alias)
-    {
-        $model = self::find()->filterAvailable()
-            ->joinWith('seo')
-            ->where(['alias' => $alias])
-            ->one();
-        return $model;
-    }
 }

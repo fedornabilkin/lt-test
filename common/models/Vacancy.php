@@ -135,14 +135,4 @@ class Vacancy extends BindModel
             ->all();
         return $rows;
     }
-
-
-    public static function getModelByAlias($alias)
-    {
-        $model = self::find()->filterAvailable()
-            ->joinWith('seo')
-            ->where(['alias' => $alias])
-            ->one();
-        return $model;
-    }
 }

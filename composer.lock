@@ -827,12 +827,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fedornabilkin/yii2-binds.git",
-                "reference": "8a19bb4c3889cae4f995b1fb2be532cde6acbcab"
+                "reference": "37ca73ec2e48499cad7547fd1e8aa931280cb4bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fedornabilkin/yii2-binds/zipball/8a19bb4c3889cae4f995b1fb2be532cde6acbcab",
-                "reference": "8a19bb4c3889cae4f995b1fb2be532cde6acbcab",
+                "url": "https://api.github.com/repos/fedornabilkin/yii2-binds/zipball/37ca73ec2e48499cad7547fd1e8aa931280cb4bd",
+                "reference": "37ca73ec2e48499cad7547fd1e8aa931280cb4bd",
                 "shasum": ""
             },
             "require": {
@@ -865,7 +865,7 @@
                 "seo",
                 "yii2"
             ],
-            "time": "2018-04-17T21:21:23+00:00"
+            "time": "2018-04-24T20:06:26+00:00"
         },
         {
             "name": "fedornabilkin/yii2-redirect",
