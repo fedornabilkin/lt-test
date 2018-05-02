@@ -120,7 +120,7 @@ class Vacancy extends BindModel
     public function getChildModels()
     {
         return array_merge(parent::getChildModels(), [
-//            'Vacancy' => Vacancy::class,
+            Candidate::tableName() => Candidate::class,
         ]);
     }
 
