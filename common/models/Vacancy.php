@@ -59,6 +59,13 @@ class Vacancy extends BindModel
                         'industry' => [
                             'multiple' => false,
                         ],
+                        'city' => [
+                            'multiple' => false,
+                        ],
+                        'citizenship' => [
+                            'multiple' => true,
+                            'asDropdown' => false,
+                        ],
                     ],
                 ],
             ],
@@ -107,6 +114,17 @@ class Vacancy extends BindModel
     }
 
     /**
+     * модели hasOne, указать для удаления дочерней модели
+     * если она связана с родительской один-к-одному
+     */
+    public function getChildModels()
+    {
+        return array_merge(parent::getChildModels(), [
+//            'Vacancy' => Vacancy::class,
+        ]);
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getCustomer()
@@ -134,5 +152,13 @@ class Vacancy extends BindModel
             ->where(['user_id' => self::getUserId()])
             ->all();
         return $rows;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCandidates()
+    {
+        return $this->hasMany(Candidate::class, ['uid_content' => 'uid']);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\Candidate;
 use common\models\VacancySearch;
 use Yii;
 use yii\base\InvalidParamException;
@@ -45,6 +46,7 @@ class SiteController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
+                    'candidate' => ['post'],
                 ],
             ],
         ];
@@ -83,6 +85,33 @@ class SiteController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function actionCandidate()
+    {
+        $model = new Candidate();
+
+        $flash = [
+            'key' => 'success',
+            'value' => \Yii::t('app', 'The request has been successfully sent.'),
+        ];
+
+        if (!$model->load(Yii::$app->request->post()) or !$model->save()) {
+            $flash = [
+                'key' => 'danger',
+                'value' => \Yii::t('app', 'Error when sending the request.'),
+            ];
+            $response['errors'] = $model->getErrors();
+        }
+
+        if(Yii::$app->request->isAjax){
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            $response['text'] = $flash['value'];
+            return $response;
+        }else{
+            \Yii::$app->session->setFlash($flash['key'], $flash['value']);
+            return $this->redirect(['/']);
+        }
     }
 
     /**

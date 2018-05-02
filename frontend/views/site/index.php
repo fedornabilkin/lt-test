@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 /**
@@ -12,6 +12,12 @@ use yii\helpers\Url;
 
 $this->title = Yii::t('app', 'Vacancies');
 //$this->params['breadcrumbs'][] = $this->title;
+
+$modalWidget = \frontend\widgets\modal\Widget::begin([
+    'title' => Yii::t('app', 'To leave bid'),
+    'body' => $this->render('@frontend/views/forms/candidate'),
+]);
+$modalId = $modalWidget->getId();
 ?>
 <div class="vacancy-index">
 
@@ -48,6 +54,32 @@ $this->title = Yii::t('app', 'Vacancies');
                     return date('d.m.y', $data->updateTime);
                 }
             ],
+            [
+                'label' => Yii::t('app', 'Action'),
+                'format' => 'raw',
+                'value' => function($data) use ($modalId){
+                    $button = Html::button(Yii::t('app', 'Sign up'), [
+                        'class' => 'btn btn-primary',
+                        'data-toggle' => 'modal',
+                        'data-target' => '#' . $modalId,
+                        'data-vacancy_uid' => $data->uid,
+                    ]);
+                    return $button;
+                }
+            ],
         ],
     ]); ?>
 </div>
+
+<?php
+$this->registerJs("$('#".$modalId."').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var vacancy = button.data('vacancy_uid');
+        var modal = $(this);
+        modal.find('.modal-body #candidate-uid_content').attr({'value':vacancy});
+        modal.find('.response').remove();
+    })");
+?>
+
+
+<?php $modalWidget::end() ?>

@@ -1,10 +1,16 @@
 <?php
 
+use yii\data\ArrayDataProvider;
+use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 
-/* @var $this yii\web\View */
-/* @var $model common\models\Vacancy */
+/*
+ * @var $this yii\web\View
+ * @var $model common\models\Vacancy
+ * @var $candidates \common\models\Candidate
+ */
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Vacancies'), 'url' => ['index']];
@@ -30,8 +36,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             [
                 'label' => Yii::t('app', 'Customer'),
+                'format' => 'raw',
                 'value' => function ($data){
-                    return $data->customer->title;
+                    $url = Url::to(['/customer/view', 'alias' => $data->customer->seo->alias]);
+                    return Html::a($data->customer->title, $url);
                 }
             ],
             'title',
@@ -44,5 +52,69 @@ $this->params['breadcrumbs'][] = $this->title;
             'salary_max',
         ],
     ]) ?>
+
+    <?php
+
+    $dataProvider = new ArrayDataProvider([
+        'key' => 'id',
+        'allModels' => $model->candidates,
+        'sort' => [
+            'attributes' => ['id'],
+            'defaultOrder' => [
+                'id' => SORT_DESC,
+            ],
+        ],
+        'pagination' => [
+            'pageSize' => 25,
+        ],
+    ]);
+
+    echo GridView::widget([
+        'dataProvider' => $dataProvider,
+//            'filterModel' => $searchModel,
+        'columns' => [
+//            ['class' => 'yii\grid\SerialColumn'],
+
+
+//            [
+//                'class' => 'yii\grid\ActionColumn',
+//                'template' => '{update}',
+//                'buttons' => [
+//                    'update' => function ($url, $model) {
+//                        return Html::a(
+//                            '<span class="glyphicon glyphicon-eye-open"></span>',
+//                            Url::to(['/candidate/view', 'id' => $model->id])
+//                        );
+//                    }
+//                ],
+//            ],
+            [
+                'label' => Yii::t('app', 'FIO'),
+                'value' => function($data){
+                    return $data->fname . ' ' . $data->iname . ' ' . $data->oname;
+                }
+            ],
+            'email:email',
+            'phone',
+            [
+                'label' => Yii::t('app', 'Birthday'),
+                'value' => function($data){
+                    return date('d.m.y', $data->birthday);
+                }
+            ],
+            [
+                'label' => Yii::t('app', 'Created At'),
+                'value' => function($data){
+                    return date('d.m.y', $data->createTime);
+                }
+            ],
+//            [
+//                'class' => 'yii\grid\ActionColumn',
+//                'template' => '{delete}',
+//            ],
+        ],
+    ]);
+
+    ?>
 
 </div>

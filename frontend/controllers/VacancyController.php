@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\controllers\BaseWebController;
+use common\models\Candidate;
 use common\models\Customer;
 use common\models\Vacancy;
 use common\models\VacancySearch;
@@ -71,6 +72,7 @@ class VacancyController extends BaseWebController
         if($id && $model->seo->alias){
             return $this->redirect(['view', 'alias' => $model->seo->alias]);
         }
+
         return $this->render('view', [
             'model' => $model,
         ]);

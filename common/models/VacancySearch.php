@@ -40,7 +40,7 @@ class VacancySearch extends Vacancy
      */
     public function search($params)
     {
-        $query = Vacancy::find();
+        $query = Vacancy::find()->filterAvailable();
 
         // add conditions that should always apply here
 

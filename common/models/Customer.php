@@ -6,6 +6,7 @@ use dektrium\user\models\User;
 use fedornabilkin\binds\behaviors\BindBehavior;
 use fedornabilkin\binds\behaviors\SeoBehavior;
 use fedornabilkin\binds\models\base\BindModel;
+use fedornabilkin\binds\models\base\BindQuery;
 use Yii;
 
 /**
@@ -93,16 +94,18 @@ class Customer extends BindModel
     public function getChildModels()
     {
         return array_merge(parent::getChildModels(), [
-            'Vacancy' => Vacancy::class,
+            Vacancy::tableName() => Vacancy::class,
         ]);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return BindQuery
      */
     public function getVacancies()
     {
-        return $this->hasMany(Vacancy::class, ['customer_id' => 'id']);
+        /** @var $query BindQuery */
+        $query = $this->hasMany(Vacancy::class, ['customer_id' => 'id']);
+        return $query->filterAvailable();
     }
 
     /**
