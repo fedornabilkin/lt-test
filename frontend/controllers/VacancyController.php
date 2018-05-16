@@ -69,7 +69,7 @@ class VacancyController extends BaseWebController
     public function actionView($alias = null, $id = null)
     {
         $model = $alias ? $this->findModelAlias($alias, Vacancy::class) : $this->findModel($id);
-        if($id && $model->seo->alias){
+        if($id && is_object($model->seo) && $model->seo->alias){
             return $this->redirect(['view', 'alias' => $model->seo->alias]);
         }
 

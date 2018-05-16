@@ -2,17 +2,16 @@
 
 namespace frontend\assets;
 
-use yii\web\AssetBundle;
+use common\assets\AbstractAsset;
 
 /**
  * Main frontend application asset bundle.
  */
-class AppAsset extends AssetBundle
+class AppAsset extends AbstractAsset
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/site.css',
     ];
     public $js = [
         'js/sar/sarSubmit.js',

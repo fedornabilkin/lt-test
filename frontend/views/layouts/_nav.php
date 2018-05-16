@@ -15,7 +15,7 @@ NavBar::begin([
     'brandLabel' => Yii::$app->name,
     'brandUrl' => Yii::$app->homeUrl,
     'options' => [
-        'class' => 'navbar-inverse navbar-fixed-top',
+        'class' => 'navbar-main navbar navbar-inverse',
     ],
 ]);
 $menuItems = [
@@ -42,3 +42,4 @@ echo Nav::widget([
     'items' => $menuItems,
 ]);
 NavBar::end();
+?>

@@ -6,12 +6,12 @@
  */
 
 use common\widgets\Alert;
-use frontend\assets\AppAsset;
 use frontend\assets\SarAsset;
+use frontend\assets\ThemeAsset;
 use yii\helpers\Html;
 use yii\widgets\Breadcrumbs;
 
-AppAsset::register($this);
+ThemeAsset::register($this);
 SarAsset::register($this);
 ?>
 <?php $this->beginPage() ?>

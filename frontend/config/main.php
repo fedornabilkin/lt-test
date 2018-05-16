@@ -55,6 +55,13 @@ return [
                 'kompanii/<alias:[[^a-zA-Z0-9\-]+>' => 'customer/view',
             ],
         ],
+        'assetManager' => [
+            'bundles' => [
+                'yii\bootstrap\BootstrapAsset' => [
+                    'css' => []
+                ]
+            ]
+        ],
 
         'view' => [
             'as seo' => [
